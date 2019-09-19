@@ -1,0 +1,46 @@
+<app-header></app-header>
+<div>
+  <form class="hpform">
+    <input type="submit" (click)="logout()" value="Logout" />
+  </form>
+</div>
+<div>
+<div class="container">
+  <div>
+    Post topic: <br />
+    <textarea name="postTopicText" [(ngModel)]="postTopicText">
+
+      </textarea>
+    <button (click)="postTopic()">Post</button>
+  </div>
+  <div *ngFor="let topic of topics">
+    <button (click)="selectTopic(topic['id'])">{{topic['name']}}</button>
+  </div>
+  <div *ngIf="selectedTopicId">
+    <div>
+      Post message: <br />
+      <textarea name="postText" [(ngModel)]="postText">
+
+      </textarea>
+      <button (click)="postMessage()">Post</button>
+    </div>
+    <div *ngFor="let post of posts">
+      <div>
+        <em *ngIf="post['replyto']">{{getMessageText(post['replyto']['id'])}}</em>
+        {{post['message']}}<br />
+        {{post['author']['username']}}, {{post['timestamp'] | date: 'HH:mm:ss dd/MM/yyyy'}} <br />
+        <button (click)="openReplyWindow(post['id'])">Reply</button>
+        <div *ngIf="selectedReplyToId == post['id']">
+          <div>
+            Post reply: <br />
+            <textarea name="postReplyText" [(ngModel)]="postReplyText"></textarea>
+            <button (click)="postReplyMessage()">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<app-footer></app-footer>
+<ngx-loading [show]="loading"></ngx-loading>

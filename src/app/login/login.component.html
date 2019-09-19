@@ -1,0 +1,12 @@
+<app-header></app-header>
+<div class="container">
+  <br clear="all" />
+  <form class="hpform" >
+    <input name="username" class="hpform" type="text" [(ngModel)]="username" placeholder="Username"> <br />
+    <input name="password" class="hpform"  type="password" [(ngModel)]="password" placeholder="Password"> <br />
+    <input class="hpform" type="submit" style="background-color: rgb(0, 102, 0)" (click)="login();false" value="Login" /><br />
+    <input class="hpform-green" type="submit" [routerLink]="['/registration']" value="Register" />
+  </form>
+</div>
+<app-footer></app-footer>
+<ngx-loading [show]="loading"></ngx-loading>
