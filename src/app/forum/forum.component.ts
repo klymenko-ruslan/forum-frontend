@@ -16,6 +16,7 @@ export class ForumComponent implements OnInit {
 
   selectedReplyToId = null;
   selectedTopicId = null;
+  selectedTopicAuthor = null;
   topics = [];
   posts = [];
 
@@ -86,11 +87,13 @@ export class ForumComponent implements OnInit {
     });
   }
 
-  selectTopic(topicId) {
+  selectTopic(topicId, authorId) {
     if (this.selectedTopicId == topicId) {
       this.selectedTopicId = null;
+      this.selectedTopicAuthor = null;
     } else {
       this.selectedTopicId = topicId;
+      this.selectedTopicAuthor = authorId;
       this.loadPosts(topicId);
     }
   }
@@ -109,6 +112,24 @@ export class ForumComponent implements OnInit {
     } else {
       this.selectedReplyToId = postId;
     }
+  }
+
+  removeTopic() {
+    this.loading = true;
+    this.httpService.removeTopic(this.selectedTopicId).subscribe(response => {
+      this.loadTopics();
+      this.selectedTopicId = null;
+      this.selectedTopicAuthor = null;
+      this.loading = false;
+    });
+  }
+
+  isAdmin() {
+    return 'admin' == localStorage.getItem(AuthorizationService.role);
+  }
+
+  getUserid() {
+    return localStorage.getItem(AuthorizationService.userId);
   }
 
   logout() {

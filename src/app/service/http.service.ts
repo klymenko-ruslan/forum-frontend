@@ -28,6 +28,10 @@ export class HttpService {
     return this.http.post(HttpService.BASE_URL + 'topic', body);
   }
 
+  removeTopic(topicId) {
+    return this.http.delete(HttpService.BASE_URL + 'topic/' + topicId);
+  }
+
   getPosts(topicId) {
     return this.http.get(HttpService.BASE_URL + 'post/' + topicId);
   }

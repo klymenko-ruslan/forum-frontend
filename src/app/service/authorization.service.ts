@@ -8,13 +8,14 @@ export class AuthorizationService implements CanActivate {
 
   public static readonly authTokenKey = 'token';
   public static readonly userId = 'userId';
+  public static readonly role = 'role';
 
   constructor(private router: Router) {}
 
   login(object) {
     localStorage.setItem(AuthorizationService.authTokenKey, object['token']);
     localStorage.setItem(AuthorizationService.userId, object['userId']);
-    //localStorage.setItem('username', username);
+    localStorage.setItem(AuthorizationService.role, object['role']);
     this.router.navigateByUrl('/forum');
   }
 

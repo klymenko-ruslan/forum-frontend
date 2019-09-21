@@ -1,3 +1,4 @@
+{{getUserid()}}
 <app-header></app-header>
 <div>
   <input style="background-color: rgb(0, 153, 153)" class="btn btn-info" type="submit" (click)="logout()" value="Logout" />
@@ -12,14 +13,18 @@
   </div>
   <br />
   <span *ngFor="let topic of topics">
-    <button class="btn btn-info" [ngStyle]="{'background-color': this.selectedTopicId == topic['id'] ? 'rgb(0, 153, 153)' : '#17a2b8'}" (click)="selectTopic(topic['id'])">{{topic['name']}}</button>
+
+    <button class="btn btn-info" [ngStyle]="{'background-color': this.selectedTopicId == topic['id'] ? 'rgb(0, 153, 153)' : '#17a2b8'}" (click)="selectTopic(topic['id'], topic['author']['id'])">{{topic['name']}}</button>
   </span>
   <div *ngIf="selectedTopicId">
+    <div *ngIf="selectedTopicAuthor == getUserid() || isAdmin()">
+      <button class="btn btn-info" (click)="removeTopic()">Remove topic</button>
+    </div>
     <div>
       <textarea placeholder="Post message" class="form-control" name="postText" [(ngModel)]="postText">
 
       </textarea>
-      <button class="btn btn-info" (click)="postMessage()">Post</button>
+      <button class="btn btn-info" (click)="postMessage()">Post message</button>
     </div>
     <div *ngFor="let post of posts">
       <div>
