@@ -14,6 +14,7 @@ import {NgxLoadingModule} from 'ngx-loading';
 import { ForumComponent } from './forum/forum.component';
 import {AuthorizationService} from './service/authorization.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {BsDropdownModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
@@ -37,7 +38,10 @@ const routes: Routes = [
     BrowserAnimationsModule,
     [RouterModule.forRoot(routes)],
     SimpleNotificationsModule.forRoot({timeOut: 4000, showProgressBar: true}),
-    NgxLoadingModule.forRoot({})
+    NgxLoadingModule.forRoot({}),
+    BsDropdownModule.forRoot(),
+    TooltipModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [HttpService, HttpClient, AuthorizationService],
   bootstrap: [AppComponent]

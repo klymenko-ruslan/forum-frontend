@@ -1,13 +1,11 @@
 <app-header></app-header>
 <div class="container">
   <br clear="all" />
-  <form class="hpform">
-    <input type="text" name="username" [(ngModel)]="username" placeholder="Username" /> <br />
-    <input type="password" name="password" [(ngModel)]="password" placeholder="Password" /> <br />
+  <input type="text" class="form-control" name="username" [(ngModel)]="username" placeholder="Username" /> <br />
+  <input type="password" class="form-control" name="password" [(ngModel)]="password" placeholder="Password" /> <br />
 
-    <input type="submit" style="background-color: rgb(0, 102, 0)" (click)="register();" value="Register" /><br />
-    <input type="submit" [routerLink]="['/login']" value="Login" /><br />
-  </form>
+  <input class="btn btn-info" type="submit" style="background-color: rgb(0, 153, 153)" (click)="register();" value="Register" />
+  <input class="btn btn-info" type="submit" [routerLink]="['/login']" value="Login" />
 </div>
 <app-footer></app-footer>
 <ngx-loading [show]="loading"></ngx-loading>

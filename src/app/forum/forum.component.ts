@@ -87,8 +87,12 @@ export class ForumComponent implements OnInit {
   }
 
   selectTopic(topicId) {
-    this.selectedTopicId = topicId;
-    this.loadPosts(topicId);
+    if (this.selectedTopicId == topicId) {
+      this.selectedTopicId = null;
+    } else {
+      this.selectedTopicId = topicId;
+      this.loadPosts(topicId);
+    }
   }
 
   loadPosts(topicId) {

@@ -1,42 +1,39 @@
 <app-header></app-header>
 <div>
-  <form class="hpform">
-    <input type="submit" (click)="logout()" value="Logout" />
-  </form>
+  <input style="background-color: rgb(0, 153, 153)" class="btn btn-info" type="submit" (click)="logout()" value="Logout" />
 </div>
 <div>
 <div class="container">
-  <div>
-    Post topic: <br />
-    <textarea name="postTopicText" [(ngModel)]="postTopicText">
+  <div *ngIf="!selectedTopicId">
+    <textarea placeholder="Post topic" class="form-control" name="postTopicText" [(ngModel)]="postTopicText">
 
       </textarea>
-    <button (click)="postTopic()">Post</button>
+    <button style="background-color: rgb(0, 153, 153)" class="btn btn-info" (click)="postTopic()">Post</button>
   </div>
-  <div *ngFor="let topic of topics">
-    <button (click)="selectTopic(topic['id'])">{{topic['name']}}</button>
-  </div>
+  <br />
+  <span *ngFor="let topic of topics">
+    <button class="btn btn-info" [ngStyle]="{'background-color': this.selectedTopicId == topic['id'] ? 'rgb(0, 153, 153)' : '#17a2b8'}" (click)="selectTopic(topic['id'])">{{topic['name']}}</button>
+  </span>
   <div *ngIf="selectedTopicId">
     <div>
-      Post message: <br />
-      <textarea name="postText" [(ngModel)]="postText">
+      <textarea placeholder="Post message" class="form-control" name="postText" [(ngModel)]="postText">
 
       </textarea>
-      <button (click)="postMessage()">Post</button>
+      <button class="btn btn-info" (click)="postMessage()">Post</button>
     </div>
     <div *ngFor="let post of posts">
       <div>
         <em *ngIf="post['replyto']">{{getMessageText(post['replyto']['id'])}}</em>
-        {{post['message']}}<br />
-        {{post['author']['username']}}, {{post['timestamp'] | date: 'HH:mm:ss dd/MM/yyyy'}} <br />
-        <button (click)="openReplyWindow(post['id'])">Reply</button>
-        <div *ngIf="selectedReplyToId == post['id']">
-          <div>
-            Post reply: <br />
-            <textarea name="postReplyText" [(ngModel)]="postReplyText"></textarea>
-            <button (click)="postReplyMessage()">Post</button>
-          </div>
-        </div>
+        <font size="+1">{{post['message']}}</font><br />
+        Author: {{post['author']['username']}}<br />
+        Time: {{post['timestamp'] | date: 'HH:mm:ss dd/MM/yyyy'}} <br /><br />
+        <!--<button class="btn btn-info" (click)="openReplyWindow(post['id'])">Reply</button>-->
+        <!--<div *ngIf="selectedReplyToId == post['id']">-->
+          <!--<div>-->
+            <!--<textarea class="form-control" placeholder="Post reply" name="postReplyText" [(ngModel)]="postReplyText"></textarea>-->
+            <!--<button class="btn btn-info" (click)="postReplyMessage()">Post</button>-->
+          <!--</div>-->
+        <!--</div>-->
       </div>
     </div>
   </div>
