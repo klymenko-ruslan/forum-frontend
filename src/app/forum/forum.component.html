@@ -1,45 +1,85 @@
-{{getUserid()}}
 <app-header></app-header>
-<div>
-  <input style="background-color: rgb(0, 153, 153)" class="btn btn-info" type="submit" (click)="logout()" value="Logout" />
+<div align="right" style="margin-right:5%; margin-left:5%;">
+  <br />
+  <input *ngIf="isAdmin()" class="btn btn-info btn-lg" style="background-color: #2199e8" type="submit" (click)="openTopics()" value="Topics" />
+  <input *ngIf="isAdmin()" class="btn btn-info btn-lg" style="background-color: #2199e8" type="submit" (click)="loadUserList()" value="User management" />
+  <input class="btn btn-danger btn-lg" type="submit" (click)="logout()" value="Logout" />
 </div>
-<div>
-<div class="container">
-  <div *ngIf="!selectedTopicId">
-    <textarea placeholder="Post topic" class="form-control" name="postTopicText" [(ngModel)]="postTopicText">
+<br />
+<div class="container" *ngIf="isUserManagement">
+  <table class="table">
+    <tr>
+      <td>Username</td>
+      <td>Role</td>
+      <td>Action</td>
+    </tr>
+    <tr *ngFor="let user of users | paginate: { itemsPerPage: 5, currentPage: userPage }">
+      <td>{{user['username']}}</td>
+      <td>{{user['role']['name']}}</td>
+      <td><button *ngIf="user['username'] != 'admin'" class="btn btn-danger" (click)="removeUser(user['id'])">Remove user</button></td>
+    </tr>
+  </table>
+  <pagination-controls (pageChange)="userPage = $event"></pagination-controls>
+</div>
+<div class="container" *ngIf="!isUserManagement">
+  <button style="background-color: #2199e8" class="btn btn-info" (click)="checkCreateTopic()">Create new topic</button>
+  <div *ngIf="isCreateTopic">
+    <textarea placeholder="Topic name" class="form-control" name="postTopicText" [(ngModel)]="postTopicText">
 
       </textarea>
-    <button style="background-color: rgb(0, 153, 153)" class="btn btn-info" (click)="postTopic()">Post</button>
+    <button style="background-color: #2199e8" class="btn btn-info" (click)="postTopic()">Create topic</button>
+    <br />
+    <br />
   </div>
+  <br />
   <br />
   <span *ngFor="let topic of topics">
 
-    <button class="btn btn-info" [ngStyle]="{'background-color': this.selectedTopicId == topic['id'] ? 'rgb(0, 153, 153)' : '#17a2b8'}" (click)="selectTopic(topic['id'], topic['author']['id'])">{{topic['name']}}</button>
+    <button class="btn btn-info btn-md" [ngStyle]="{'background-color': this.selectedTopicId == topic['id'] ? '#17a2b8' : '#2199e8'}" (click)="selectTopic(topic['id'], topic['author']['id'])">{{topic['name']}}</button>
   </span>
   <div *ngIf="selectedTopicId">
     <div *ngIf="selectedTopicAuthor == getUserid() || isAdmin()">
-      <button class="btn btn-info" (click)="removeTopic()">Remove topic</button>
+      <button class="btn btn-danger btn-xs" (click)="removeTopic()">Remove topic</button>
+      <br />
+      <br />
     </div>
-    <div>
-      <textarea placeholder="Post message" class="form-control" name="postText" [(ngModel)]="postText">
+    <table class="table">
+      <tr>
+        <td colspan="4">Message</td>
+        <td>Author</td>
+        <td>Time</td>
+        <td>Action</td>
+      </tr>
+      <tr class="lead" *ngFor="let post of posts | paginate: { itemsPerPage: 2, currentPage: page }">
+        <td colspan="4">
+          <font size="-1">
+            <em *ngIf="post['replyto']" style="white-space:pre-line">{{getMessageText(post['replyto']['id'])}}</em>
+            {{post['message']}}
+          </font>
+        </td>
+        <td><font size="-1">{{post['author']['username']}}</font></td>
+        <td><font size="-1">{{post['timestamp'] | date: 'HH:mm:ss dd/MM/yyyy'}}</font> </td>
+        <td>
+          <button class="btn btn-info" (click)="openReplyWindow(post['id'])">Reply</button>
+          <div *ngIf="selectedReplyToId == post['id']">
+            <div>
+              <textarea class="form-control" placeholder="Post reply" name="postReplyText" [(ngModel)]="postReplyText"></textarea>
+              <button class="btn btn-info" (click)="postReplyMessage()">Post</button>
+            </div>
+          </div>
+          <button class="btn btn-danger btn-xs" *ngIf="post['author']['id'] == getUserid()" (click)="removePost(post['id'])">Remove message</button>
+        </td>
+        <br />
 
-      </textarea>
+      </tr>
+    </table>
+
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+    <div>
+        <textarea placeholder="Post message" class="form-control" name="postText" [(ngModel)]="postText">
+
+        </textarea>
       <button class="btn btn-info" (click)="postMessage()">Post message</button>
-    </div>
-    <div *ngFor="let post of posts">
-      <div>
-        <em *ngIf="post['replyto']">{{getMessageText(post['replyto']['id'])}}</em>
-        <font size="+1">{{post['message']}}</font><br />
-        Author: {{post['author']['username']}}<br />
-        Time: {{post['timestamp'] | date: 'HH:mm:ss dd/MM/yyyy'}} <br /><br />
-        <!--<button class="btn btn-info" (click)="openReplyWindow(post['id'])">Reply</button>-->
-        <!--<div *ngIf="selectedReplyToId == post['id']">-->
-          <!--<div>-->
-            <!--<textarea class="form-control" placeholder="Post reply" name="postReplyText" [(ngModel)]="postReplyText"></textarea>-->
-            <!--<button class="btn btn-info" (click)="postReplyMessage()">Post</button>-->
-          <!--</div>-->
-        <!--</div>-->
-      </div>
     </div>
   </div>
 

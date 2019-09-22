@@ -15,6 +15,7 @@ import { ForumComponent } from './forum/forum.component';
 import {AuthorizationService} from './service/authorization.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BsDropdownModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
@@ -41,7 +42,8 @@ const routes: Routes = [
     NgxLoadingModule.forRoot({}),
     BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    NgxPaginationModule
   ],
   providers: [HttpService, HttpClient, AuthorizationService],
   bootstrap: [AppComponent]

@@ -40,4 +40,16 @@ export class HttpService {
     return this.http.post(HttpService.BASE_URL + 'post/', body);
   }
 
+  removePost(postId) {
+    return this.http.delete(HttpService.BASE_URL + 'post/' + postId);
+  }
+
+  getUsers() {
+    return this.http.get(HttpService.BASE_URL + 'user/');
+  }
+
+  removeUser(userId) {
+    return this.http.delete(HttpService.BASE_URL + 'user/' + userId);
+  }
+
 }

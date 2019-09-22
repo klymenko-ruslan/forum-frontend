@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthorizationService} from '../service/authorization.service';
 import {HttpService} from '../service/http.service';
+import {NotificationsService} from 'angular2-notifications';
 
 @Component({
   selector: 'app-forum',
@@ -9,6 +10,12 @@ import {HttpService} from '../service/http.service';
 export class ForumComponent implements OnInit {
 
   loading = false;
+
+  page = 1;
+
+  userPage = 1;
+
+  isUserManagement = false;
 
   postTopicText = '';
   postText = '';
@@ -19,9 +26,13 @@ export class ForumComponent implements OnInit {
   selectedTopicAuthor = null;
   topics = [];
   posts = [];
+  users = [];
+
+  isCreateTopic = false;
 
   constructor(private authorizationService: AuthorizationService,
-              private httpService: HttpService) {}
+              private httpService: HttpService,
+              private notificationService: NotificationsService) {}
 
   ngOnInit() {
     this.loadTopics();
@@ -39,9 +50,13 @@ export class ForumComponent implements OnInit {
     const message = this.posts.filter(it => it['id'] == messageId)[0];
     let prefix = '';
     if(message['replyto']) {
-      prefix = '"' + this.getMessageText(message['replyto']['id']) + '"<br />';
+      prefix = '' + this.getMessageText(message['replyto']['id']) + '';
     }
-    return prefix + message['message'];
+    return prefix + '"' + message['message'] + '" - ' + message['author']['username'] + '\n';
+  }
+
+  checkCreateTopic() {
+    this.isCreateTopic = !this.isCreateTopic;
   }
 
   postTopic() {
@@ -51,9 +66,16 @@ export class ForumComponent implements OnInit {
       body.authorid = localStorage.getItem(AuthorizationService.userId);
       body.name = this.postTopicText;
       this.httpService.postTopic(body).subscribe(response => {
+        this.isCreateTopic = false;
         this.loading = false;
+        this.notificationService.create('Accepted', 'Topic was created');
         this.loadTopics();
+        this.selectedTopicId = null;
+        this.selectedTopicAuthor = null;
+        this.selectedReplyToId = null;
       });
+    } else {
+      this.notificationService.error('Error', 'Topic name cant be empty');
     }
   }
 
@@ -117,9 +139,20 @@ export class ForumComponent implements OnInit {
   removeTopic() {
     this.loading = true;
     this.httpService.removeTopic(this.selectedTopicId).subscribe(response => {
-      this.loadTopics();
       this.selectedTopicId = null;
       this.selectedTopicAuthor = null;
+      this.loadTopics();
+      this.loading = false;
+    });
+  }
+
+  removePost(postId) {
+    this.loading = true;
+    this.httpService.removePost(postId).subscribe(response => {
+      this.loadPosts(this.selectedTopicId);
+      this.loading = false;
+    }, err => {
+      this.notificationService.error('Deletion failed', 'Its not possible to remove message. Somebody already replied to it.')
       this.loading = false;
     });
   }
@@ -130,6 +163,27 @@ export class ForumComponent implements OnInit {
 
   getUserid() {
     return localStorage.getItem(AuthorizationService.userId);
+  }
+
+  loadUserList() {
+    this.isUserManagement = true;
+
+    this.httpService.getUsers().subscribe((response: any[]) => {
+      this.users = response;
+    });
+  }
+
+  openTopics() {
+    this.isUserManagement = false;
+    this.loadTopics();
+  }
+
+  removeUser(userId) {
+    this.loading = true;
+    this.httpService.removeUser(userId).subscribe(response => {
+      this.loadUserList();
+      this.loading = false;
+    });
   }
 
   logout() {
