@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
         this.loading = false;
       }
     }, err => {
-      alert(JSON.stringify(err));
+      this.loading = false;
     });
   }
 

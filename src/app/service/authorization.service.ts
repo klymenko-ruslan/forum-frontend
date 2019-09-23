@@ -23,6 +23,9 @@ export class AuthorizationService implements CanActivate {
 
   logout() {
     localStorage.removeItem(AuthorizationService.authTokenKey);
+    localStorage.removeItem(AuthorizationService.userId);
+    localStorage.removeItem(AuthorizationService.role);
+    localStorage.removeItem(AuthorizationService.username);
     this.router.navigate(['/login']);
   }
 

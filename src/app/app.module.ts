@@ -8,7 +8,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import {HttpService} from './service/http.service';
 import {FormsModule} from '@angular/forms';
-import {HttpClient, HttpClientModule, HttpHandler} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpHandler} from '@angular/common/http';
 import {SimpleNotificationsModule} from 'angular2-notifications';
 import {NgxLoadingModule} from 'ngx-loading';
 import { ForumComponent } from './forum/forum.component';

@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {AuthorizationService} from './authorization.service';
 
 @Injectable()
 export class HttpService {
@@ -10,6 +11,14 @@ export class HttpService {
 
   constructor(private http: HttpClient) {
     HttpService.BASE_URL = 'http://' + HttpService.SERVICE_ADDRESS + ':' + HttpService.SERVICE_PORT + '/';
+  }
+
+  private getHeaders() {
+    const headers = new HttpHeaders()
+      .set('Authorization', localStorage.getItem(AuthorizationService.authTokenKey))
+      .set('UserId', localStorage.getItem(AuthorizationService.userId));
+
+    return headers;
   }
 
   register(body) {
@@ -25,31 +34,31 @@ export class HttpService {
   }
 
   postTopic(body) {
-    return this.http.post(HttpService.BASE_URL + 'topic', body);
+    return this.http.post(HttpService.BASE_URL + 'topic', body, {headers: this.getHeaders()});
   }
 
   removeTopic(topicId) {
-    return this.http.delete(HttpService.BASE_URL + 'topic/' + topicId);
+    return this.http.delete(HttpService.BASE_URL + 'topic/' + topicId, {headers: this.getHeaders()});
   }
 
   getPosts(topicId) {
-    return this.http.get(HttpService.BASE_URL + 'post/' + topicId);
+    return this.http.get(HttpService.BASE_URL + 'post/' + topicId, {headers: this.getHeaders()});
   }
 
   postPost(body) {
-    return this.http.post(HttpService.BASE_URL + 'post/', body);
+    return this.http.post(HttpService.BASE_URL + 'post/', body, {headers: this.getHeaders()});
   }
 
   removePost(postId) {
-    return this.http.delete(HttpService.BASE_URL + 'post/' + postId);
+    return this.http.delete(HttpService.BASE_URL + 'post/' + postId, {headers: this.getHeaders()});
   }
 
   getUsers() {
-    return this.http.get(HttpService.BASE_URL + 'user/');
+    return this.http.get(HttpService.BASE_URL + 'user/', {headers: this.getHeaders()});
   }
 
   removeUser(userId) {
-    return this.http.delete(HttpService.BASE_URL + 'user/' + userId);
+    return this.http.delete(HttpService.BASE_URL + 'user/' + userId, {headers: this.getHeaders()});
   }
 
 }
