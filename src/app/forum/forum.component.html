@@ -61,13 +61,20 @@
         <td><font size="-1">{{post['timestamp'] | date: 'HH:mm:ss dd/MM/yyyy'}}</font> </td>
         <td>
           <button class="btn btn-info" (click)="openReplyWindow(post['id'])">Reply</button>
+          <button class="btn btn-info" *ngIf="post['author']['id'] == getUserid()" (click)="openModifyPost(post['id'])">Modify</button>
+          <button class="btn btn-danger btn-xs" *ngIf="post['author']['id'] == getUserid()" (click)="removePost(post['id'])">Remove message</button>
+          <div *ngIf="selectedModifyId == post['id']">
+            <div>
+              <textarea class="form-control" placeholder="{{post['message']}}" name="modifyPost" [(ngModel)]="postModifyText"></textarea>
+              <button class="btn btn-info" (click)="modifyPost()">Modify</button>
+            </div>
+          </div>
           <div *ngIf="selectedReplyToId == post['id']">
             <div>
               <textarea class="form-control" placeholder="Post reply" name="postReplyText" [(ngModel)]="postReplyText"></textarea>
               <button class="btn btn-info" (click)="postReplyMessage()">Post</button>
             </div>
           </div>
-          <button class="btn btn-danger btn-xs" *ngIf="post['author']['id'] == getUserid()" (click)="removePost(post['id'])">Remove message</button>
         </td>
         <br />
 

@@ -16,6 +16,7 @@ import {AuthorizationService} from './service/authorization.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BsDropdownModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
 import {NgxPaginationModule} from 'ngx-pagination';
+import {DatePipe} from '@angular/common';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
@@ -45,7 +46,7 @@ const routes: Routes = [
     ModalModule.forRoot(),
     NgxPaginationModule
   ],
-  providers: [HttpService, HttpClient, AuthorizationService],
+  providers: [HttpService, HttpClient, AuthorizationService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthorizationService} from '../service/authorization.service';
 import {HttpService} from '../service/http.service';
 import {NotificationsService} from 'angular2-notifications';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-forum',
@@ -20,7 +21,9 @@ export class ForumComponent implements OnInit {
   postTopicText = '';
   postText = '';
   postReplyText = '';
+  postModifyText = '';
 
+  selectedModifyId = null;
   selectedReplyToId = null;
   selectedTopicId = null;
   selectedTopicAuthor = null;
@@ -32,7 +35,8 @@ export class ForumComponent implements OnInit {
 
   constructor(private authorizationService: AuthorizationService,
               private httpService: HttpService,
-              private notificationService: NotificationsService) {}
+              private notificationService: NotificationsService,
+              private datePipe: DatePipe) {}
 
   ngOnInit() {
     this.loadTopics();
@@ -52,7 +56,7 @@ export class ForumComponent implements OnInit {
     if(message['replyto']) {
       prefix = '' + this.getMessageText(message['replyto']['id']) + '';
     }
-    return prefix + '"' + message['message'] + '" - ' + message['author']['username'] + '\n';
+    return prefix + '"' + message['message'] + '" - ' + message['author']['username'] + ', ' + this.datePipe.transform(message['timestamp'], 'HH:mm:ss dd/MM/yyyy') + '\n';
   }
 
   checkCreateTopic() {
@@ -70,6 +74,12 @@ export class ForumComponent implements OnInit {
         this.loading = false;
         this.notificationService.create('Accepted', 'Topic was created');
         this.loadTopics();
+        this.selectedTopicId = null;
+        this.selectedTopicAuthor = null;
+        this.selectedReplyToId = null;
+      }, err => {
+        this.notificationService.error('Failed', 'Topic was not created. Please verify that the topic name is unique');
+        this.loading = false;
         this.selectedTopicId = null;
         this.selectedTopicAuthor = null;
         this.selectedReplyToId = null;
@@ -153,6 +163,27 @@ export class ForumComponent implements OnInit {
       this.loading = false;
     }, err => {
       this.notificationService.error('Deletion failed', 'Its not possible to remove message. Somebody already replied to it.')
+      this.loading = false;
+    });
+  }
+
+  openModifyPost(postId) {
+    if (this.selectedModifyId == postId) {
+      this.selectedModifyId = null;
+    } else {
+      this.selectedModifyId = postId;
+    }
+  }
+
+  modifyPost() {
+    this.loading = true;
+    this.httpService.modifyPost(this.selectedModifyId, this.postModifyText).subscribe(response => {
+      this.loadPosts(this.selectedTopicId);
+      this.selectedModifyId = null;
+      this.postModifyText = null;
+      this.loading = false;
+    }, err => {
+      this.notificationService.error('Update failed', 'Its not possible to update message now. Try later')
       this.loading = false;
     });
   }

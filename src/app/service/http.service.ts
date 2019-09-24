@@ -53,6 +53,10 @@ export class HttpService {
     return this.http.delete(HttpService.BASE_URL + 'post/' + postId, {headers: this.getHeaders()});
   }
 
+  modifyPost(postId, newText) {
+    return this.http.put(HttpService.BASE_URL + 'post/', { 'postId': postId, 'message': newText}, {headers: this.getHeaders()});
+  }
+
   getUsers() {
     return this.http.get(HttpService.BASE_URL + 'user/', {headers: this.getHeaders()});
   }
